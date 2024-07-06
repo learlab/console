@@ -27,7 +27,7 @@
 		"fast-equals": "^5.0.1",
 		"linkifyjs": "^2.1.9",
 		"lucide-react": "^0.400.0",
-		"react-inspector": "^5.1.1"
+		"react-inspector": "^6.0.2"
 	},
 	"devDependencies": {
 		"@types/enzyme": "^3.10.18",

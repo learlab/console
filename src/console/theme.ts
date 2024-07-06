@@ -1,6 +1,6 @@
 import styled, { CreateStyled } from "@emotion/styled";
 import { chromeDark, chromeLight } from "react-inspector";
-import { Context } from "../definitions/Component";
+import { Context } from "./types";
 
 // @ts-ignore
 export default styled as CreateStyled<Context>;

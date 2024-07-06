@@ -1,14 +1,12 @@
 import { ThemeProvider } from "@emotion/react";
 
-import { Theme } from "../definitions/Component";
-
 import { Options } from "linkifyjs";
 import React from "react";
-import ErrorPanel from "./message-parsers/Error";
+import { ErrorPanel } from "./message-parsers/Error";
 import Formatted from "./message-parsers/Formatted";
-import ObjectTree from "./message-parsers/Object";
+import { ObjectTree } from "./message-parsers/Object";
 import { methodIcons } from "./methods";
-import { LogMessage, Method } from "./types";
+import { LogMessage, Method, Theme } from "./types";
 
 // https://developer.mozilla.org/en-US/docs/Web/API/console#Using_string_substitutions
 const reSubstitutions = /(%[coOs])|(%(([0-9]*[.])?[0-9]+)?[dif])/g;
@@ -87,8 +85,8 @@ export class LogItem extends React.Component<Props, any> {
 						<Formatted data={log.data} />
 						{restData.length > 0 && (
 							<ObjectTree
-								quoted={false}
 								log={{ ...log, data: restData }}
+								color={this.props.style.OBJECT_VALUE_STRING_COLOR}
 								linkifyOptions={this.props.linkifyOptions}
 							/>
 						)}
@@ -102,15 +100,18 @@ export class LogItem extends React.Component<Props, any> {
 			log.data.every((message) => typeof message === "string") &&
 			log.method === "error"
 		) {
-			return <ErrorPanel error={log.data.join(" ")} />;
+			return (
+				<ErrorPanel
+					error={log.data.join(" ")}
+					background={this.props.style.LOG_ERROR_BACKGROUND}
+				/>
+			);
 		}
 
-		// Normal inspector
-		const quoted = typeof log.data[0] !== "string";
 		return (
 			<ObjectTree
 				log={log}
-				quoted={quoted}
+				color={this.props.style.OBJECT_VALUE_STRING_COLOR}
 				linkifyOptions={this.props.linkifyOptions}
 			/>
 		);
@@ -174,10 +175,10 @@ const Timestamp = ({ children }: { children: React.ReactNode }) => {
 const MethodIcon = ({ method }: { method: string }) => {
 	if (Object.keys(methodIcons).includes(method)) {
 		const Icon = methodIcons[method];
-		return <Icon className="size-5" />;
+		return <Icon className="size-5 shrink-0" />;
 	}
 
-	return null;
+	return <div className="size-5 rounded-full shrink-0" />;
 };
 
 type AmountIconProps = {

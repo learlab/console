@@ -4,6 +4,7 @@ import {
 	CircleX,
 	InfoIcon,
 	LucideProps,
+	Table,
 	TriangleAlert,
 } from "lucide-react";
 import React from "react";

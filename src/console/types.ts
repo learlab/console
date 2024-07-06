@@ -1,6 +1,6 @@
 import type { Options } from "linkifyjs";
 import methods from "./methods";
-import { Theme } from "./theme";
+import { Theme as _Theme } from "./theme";
 
 export type Variants = "light" | "dark";
 
@@ -23,3 +23,12 @@ export type ConsoleProps = {
 	logGrouping?: boolean;
 	linkifyOptions?: Options;
 };
+
+export interface Theme {
+	variant: Variants;
+	styles: _Theme;
+}
+
+export interface Context extends Theme {
+	method: Method;
+}

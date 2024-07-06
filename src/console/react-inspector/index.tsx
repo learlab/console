@@ -1,16 +1,18 @@
+// @ts-nocheck https://github.com/storybookjs/react-inspector/issues/179
 import { withTheme } from "@emotion/react";
-import * as React from "react";
 import {
-	DOMInspector,
 	Inspector,
 	ObjectLabel,
 	ObjectName,
 	ObjectPreview,
+	ObjectRootLabel,
 	ObjectValue,
+	TableInspector,
 } from "react-inspector";
 
-import { Context } from "../../definitions/Component";
-import ErrorPanel from "../message-parsers/Error";
+import { PureComponent } from "react";
+import { ErrorPanel } from "../message-parsers/Error";
+import { Context } from "../types";
 import { Constructor, HTML, Root, Table } from "./elements";
 
 interface Props {
@@ -18,7 +20,7 @@ interface Props {
 	data: any;
 }
 
-const REMAINING_KEY = "__console_feed_remaining__";
+const REMAINING_KEY = "__console_remaining__";
 
 // copied from react-inspector
 function intersperse(arr, sep) {
@@ -40,13 +42,12 @@ const getArrayLength = (array: Array<any>) => {
 
 	if (remainingKeyCount[1] === undefined) {
 		return array.length;
-	} else {
-		const remaining = parseInt(
-			array[array.length - 1].toString().split(REMAINING_KEY)[1],
-		);
-
-		return array.length - 1 + remaining;
 	}
+	const remaining = Number.parseInt(
+		array[array.length - 1].toString().split(REMAINING_KEY)[1],
+	);
+
+	return array.length - 1 + remaining;
 };
 
 const CustomObjectRootLabel = ({ name, data }) => {
@@ -54,8 +55,8 @@ const CustomObjectRootLabel = ({ name, data }) => {
 	if (typeof data === "object" && !Array.isArray(data) && data !== null) {
 		const object = {};
 		for (const propertyName in data) {
-			if (data.hasOwnProperty(propertyName)) {
-				let propertyValue = data[propertyName];
+			if (Object.hasOwn(data, propertyName)) {
+				const propertyValue = data[propertyName];
 				if (Array.isArray(propertyValue)) {
 					const arrayLength = getArrayLength(propertyValue);
 					object[propertyName] = new Array(arrayLength);
@@ -69,17 +70,8 @@ const CustomObjectRootLabel = ({ name, data }) => {
 			object,
 		);
 	}
-	if (typeof name === "string") {
-		return (
-			<span>
-				<ObjectName name={name} />
-				<span>: </span>
-				<ObjectPreview data={rootData} />
-			</span>
-		);
-	} else {
-		return <ObjectPreview data={rootData} />;
-	}
+
+	return <ObjectRootLabel name={name} data={rootData} />;
 };
 
 const CustomObjectLabel = ({ name, data, isNonenumerable = false }) =>
@@ -100,35 +92,25 @@ const CustomObjectLabel = ({ name, data, isNonenumerable = false }) =>
 		</span>
 	);
 
-class CustomInspector extends React.PureComponent<Props, any> {
+class CustomInspector extends PureComponent<Props, any> {
 	render() {
 		const { data, theme } = this.props;
 		const { styles, method } = theme;
 
 		const dom = data instanceof HTMLElement;
 		const table = method === "table";
-
 		return (
 			<Root data-type={table ? "table" : dom ? "html" : "object"}>
 				{table ? (
 					<Table>
-						<Inspector {...this.props} theme={styles} table />
-						<Inspector
-							{...this.props}
-							theme={styles}
-							nodeRenderer={this.nodeRenderer.bind(this)}
-						/>
+						<TableInspector theme={styles} data={data} />
 					</Table>
 				) : dom ? (
 					<HTML>
-						<DOMInspector {...this.props} theme={styles} />
+						<Inspector data={data} theme={styles} table={false} />
 					</HTML>
 				) : (
-					<Inspector
-						{...this.props}
-						theme={styles}
-						nodeRenderer={this.nodeRenderer.bind(this)}
-					/>
+					<Inspector data={data} theme={styles} table={false} />
 				)}
 			</Root>
 		);
@@ -136,35 +118,40 @@ class CustomInspector extends React.PureComponent<Props, any> {
 
 	getCustomNode(data: any) {
 		const { styles } = this.props.theme;
-		const constructor = data?.constructor?.name;
+		const c = data?.constructor?.name;
 
-		if (constructor === "Function")
+		if (c === "Promise")
+			return (
+				<span style={{ fontStyle: "italic" }}>
+					Promise {"{"}
+					<span style={{ opacity: 0.6 }}>{"<pending>"}</span>
+					{"}"}
+				</span>
+			);
+
+		if (c === "Function")
 			return (
 				<span style={{ fontStyle: "italic" }}>
 					<ObjectPreview data={data} />
-					{` {`}
+					{" {"}
 					<span style={{ color: "rgb(181, 181, 181)" }}>{data.body}</span>
-					{`}`}
+					{"}"}
 				</span>
 			);
 
 		if (data instanceof Error && typeof data.stack === "string") {
-			return <ErrorPanel error={data.stack} />;
-		}
-
-		if (constructor === "Promise")
 			return (
-				<span style={{ fontStyle: "italic" }}>
-					Promise {`{`}
-					<span style={{ opacity: 0.6 }}>{`<pending>`}</span>
-					{`}`}
-				</span>
+				<ErrorPanel
+					error={data.stack}
+					background={styles.LOG_ERROR_BACKGROUND}
+				/>
 			);
+		}
 
 		if (data instanceof HTMLElement)
 			return (
 				<HTML>
-					<DOMInspector data={data} theme={styles} />
+					<Inspector data={data} theme={styles} table={false} />
 				</HTML>
 			);
 
@@ -189,69 +176,26 @@ class CustomInspector extends React.PureComponent<Props, any> {
 								object={new Array(getArrayLength(element))}
 							/>
 						);
-					} else {
-						return <ObjectValue key={index} object={element} />;
 					}
+					return <ObjectValue key={index} object={element} />;
 				});
 			if (arrayLength > maxProperties) {
 				previewArray.push(<span key="ellipsis">…</span>);
 			}
 			return (
-				<React.Fragment>
+				<>
 					<span style={styles.objectDescription}>
-						{arrayLength === 0 ? `` : `(${arrayLength})\xa0`}
+						{arrayLength === 0 ? "" : `(${arrayLength})\xa0`}
 					</span>
 					<span style={styles.preview}>
 						[{intersperse(previewArray, ", ")}
 						{}]
 					</span>
-				</React.Fragment>
+				</>
 			);
 		}
 
 		return null;
-	}
-
-	nodeRenderer(props: any) {
-		let { depth, name, data, isNonenumerable } = props;
-
-		// Root
-		if (depth === 0) {
-			const customNode = this.getCustomNode(data);
-			return customNode || <CustomObjectRootLabel name={name} data={data} />;
-		}
-
-		if (typeof data === "string" && data.includes(REMAINING_KEY)) {
-			name = REMAINING_KEY;
-			data = data.split(REMAINING_KEY)[1];
-		}
-
-		if (name === "constructor")
-			return (
-				<Constructor>
-					<ObjectLabel
-						name="<constructor>"
-						data={data.name}
-						isNonenumerable={isNonenumerable}
-					/>
-				</Constructor>
-			);
-
-		const customNode = this.getCustomNode(data);
-
-		return customNode ? (
-			<Root>
-				<ObjectName name={name} />
-				<span>: </span>
-				{customNode}
-			</Root>
-		) : (
-			<CustomObjectLabel
-				name={name}
-				data={data}
-				isNonenumerable={isNonenumerable}
-			/>
-		);
 	}
 }
 
