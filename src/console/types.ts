@@ -4,10 +4,10 @@ import { Theme } from "./theme";
 
 export type Variants = "light" | "dark";
 
-export type Methods = (typeof methods)[number];
+export type Method = (typeof methods)[number];
 
 export interface LogMessage {
-	method: Methods;
+	method: Method;
 	data?: any[];
 	amount?: number;
 	id?: string;
@@ -18,7 +18,6 @@ export type ConsoleProps = {
 	logs: LogMessage[];
 	variant?: Variants;
 	styles?: Theme;
-	filter?: Methods[];
 	searchKeywords?: string;
 	logFilter?: (log: LogMessage) => boolean;
 	logGrouping?: boolean;

@@ -6,12 +6,11 @@ import { Context } from "../definitions/Component";
 export default styled as CreateStyled<Context>;
 
 export const getStyles = (variant: "light" | "dark"): Theme => {
-	console.log("variant", variant);
 	return variant === "light" ? lightTheme : darkTheme;
 };
 
 const baseTheme: Theme = {
-	PADDING: "3px 22px 2px 0",
+	PADDING: "4px",
 	LOG_BACKGROUND: "transparent",
 	LOG_ICON_WIDTH: `${10 / 12}em`,
 	LOG_ICON_HEIGHT: `${10 / 12}em`,

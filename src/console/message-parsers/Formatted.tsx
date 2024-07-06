@@ -1,23 +1,24 @@
-import * as React from 'react'
-import { Root } from '../react-inspector/elements'
+import * as React from "react";
+import { Root } from "../react-inspector/elements";
 
-import Format from '../devtools-parser'
+import Format from "../devtools-parser";
 
 interface Props {
-  data: any[]
+	data: any[];
 }
 
 class Formatted extends React.PureComponent<Props, any> {
-  render() {
-    return (
-      <Root
-        data-type="formatted"
-        dangerouslySetInnerHTML={{
-          __html: Format(this.props.data || [])
-        }}
-      />
-    )
-  }
+	render() {
+		return (
+			<Root
+				data-type="formatted"
+				// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+				dangerouslySetInnerHTML={{
+					__html: Format(this.props.data || []),
+				}}
+			/>
+		);
+	}
 }
 
-export default Formatted
+export default Formatted;
