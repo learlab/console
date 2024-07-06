@@ -1,6 +1,6 @@
 import {
+	ArrowLeft,
 	BugIcon,
-	CircleAlert,
 	CircleX,
 	InfoIcon,
 	LucideProps,
@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import React from "react";
 
-const methods = [
+export const methods = [
 	"log",
 	"debug",
 	"info",
@@ -21,7 +21,7 @@ const methods = [
 	"count",
 	"assert",
 	"command",
-	"result",
+	"return",
 	"dir",
 ] as const;
 
@@ -35,8 +35,7 @@ export const methodIcons: Record<
 	warn: TriangleAlert,
 	error: CircleX,
 	debug: BugIcon,
+	return: ArrowLeft,
 };
 
 export default methods;
-
-export type Methods = (typeof methods)[number];

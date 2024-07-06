@@ -2,13 +2,7 @@ import { ThemeProvider } from "@emotion/react";
 
 import { Theme } from "../definitions/Component";
 
-import {
-	AmountIcon,
-	IconContainer,
-	Message,
-	MethodIcon,
-	Timestamp,
-} from "./elements";
+import { AmountIcon, Message, MethodIcon, Timestamp } from "./elements";
 
 import { Options } from "linkifyjs";
 import React from "react";
@@ -25,7 +19,7 @@ type Props = {
 	linkifyOptions?: Options;
 };
 
-class ConsoleMessage extends React.Component<Props, any> {
+export class ConsoleMessage extends React.Component<Props, any> {
 	shouldComponentUpdate(nextProps) {
 		return this.props.log.amount !== nextProps.log.amount;
 	}
@@ -57,9 +51,31 @@ class ConsoleMessage extends React.Component<Props, any> {
 	getNode() {
 		const { log } = this.props;
 
-		// Error handling
-		const error = this.typeCheck(log);
-		if (error) return error;
+		if (!log) {
+			return (
+				<Formatted
+					data={[
+						`%c[console] %cFailed to parse message! %clog was typeof ${typeof log}, but it should've been a log object`,
+						"color: red",
+						"color: orange",
+						"color: cyan",
+					]}
+				/>
+			);
+		}
+
+		if (!Array.isArray(log.data)) {
+			return (
+				<Formatted
+					data={[
+						"%c[console] %cFailed to parse message! %clog.data was not an array!",
+						"color: red",
+						"color: orange",
+						"color: cyan",
+					]}
+				/>
+			);
+		}
 
 		// Chrome formatting
 		if (log.data.length > 0 && typeof log.data[0] === "string") {
@@ -99,35 +115,4 @@ class ConsoleMessage extends React.Component<Props, any> {
 			/>
 		);
 	}
-
-	typeCheck(log: any) {
-		if (!log) {
-			return (
-				<Formatted
-					data={[
-						`%c[console] %cFailed to parse message! %clog was typeof ${typeof log}, but it should've been a log object`,
-						"color: red",
-						"color: orange",
-						"color: cyan",
-					]}
-				/>
-			);
-		}
-
-		if (!Array.isArray(log.data)) {
-			return (
-				<Formatted
-					data={[
-						"%c[console] %cFailed to parse message! %clog.data was not an array!",
-						"color: red",
-						"color: orange",
-						"color: cyan",
-					]}
-				/>
-			);
-		}
-		return false;
-	}
 }
-
-export default ConsoleMessage;

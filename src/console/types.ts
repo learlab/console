@@ -1,8 +1,10 @@
 import type { Options } from "linkifyjs";
-import { Methods } from "../definitions/Methods";
-import { Styles } from "../definitions/Styles";
+import methods from "./methods";
+import { Theme } from "./theme";
 
 export type Variants = "light" | "dark";
+
+export type Methods = (typeof methods)[number];
 
 export interface LogMessage {
 	method: Methods;
@@ -15,7 +17,7 @@ export interface LogMessage {
 export type ConsoleProps = {
 	logs: LogMessage[];
 	variant?: Variants;
-	styles?: Styles;
+	styles?: Theme;
 	filter?: Methods[];
 	searchKeywords?: string;
 	logFilter?: (log: LogMessage) => boolean;

@@ -1,5 +1,5 @@
 import React from "react";
-import { methodIcons } from "../definitions/Methods";
+import { methodIcons } from "./methods";
 import styled from "./theme";
 
 /**
@@ -14,11 +14,6 @@ const Themed = (
 ) =>
 	styles[`LOG_${method.toUpperCase()}_${style.toUpperCase()}`] ||
 	styles[`LOG_${style.toUpperCase()}`];
-
-export const Root = styled("div")({
-	wordBreak: "break-word",
-	width: "100%",
-});
 
 /**
  * console-message
@@ -45,23 +40,9 @@ export const Message = styled("div")(({ theme: { styles, method } }) => ({
 	},
 }));
 
-/**
- * Icon container
- */
-export const IconContainer = ({ children }: { children: React.ReactNode }) => {
-	return <div style={{ paddingLeft: "12px" }}>{children}</div>;
+const MessageContainer = () => {
+	return <div className="flex relative" />;
 };
-/**
- * message-icon
- */
-export const Icon = styled("div")(({ theme: { styles, method } }) => ({
-	width: styles.LOG_ICON_WIDTH,
-	height: styles.LOG_ICON_HEIGHT,
-	backgroundImage: Themed("icon", method, styles),
-	backgroundRepeat: "no-repeat",
-	backgroundSize: styles.LOG_ICON_BACKGROUND_SIZE,
-	backgroundPosition: "center",
-}));
 
 export const MethodIcon = ({ method }: { method: string }) => {
 	if (Object.keys(methodIcons).includes(method)) {

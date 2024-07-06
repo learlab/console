@@ -1,13 +1,13 @@
 import type { Options } from "linkifyjs";
+import { Theme as _Theme } from "../theme";
 import { Methods } from "./Methods";
 import { Payload } from "./Payload";
-import { Styles } from "./Styles";
 
 export type Variants = "light" | "dark";
 
 export interface Theme {
 	variant: Variants;
-	styles: Styles;
+	styles: _Theme;
 }
 
 export interface Context extends Theme {

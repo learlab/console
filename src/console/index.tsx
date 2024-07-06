@@ -1,10 +1,9 @@
 import { ThemeProvider } from "@emotion/react";
 import * as React from "react";
-import Styles from "./theme/default";
+import { getStyles } from "./theme";
 import "../styles.css";
 
-import Message from "./Message";
-import { Root } from "./elements";
+import { ConsoleMessage } from "./console-message";
 import { ConsoleProps, LogMessage } from "./types";
 
 // https://stackoverflow.com/a/48254637/4089357
@@ -26,32 +25,12 @@ const customStringify = (v: any) => {
 const getTheme = (props: ConsoleProps) => ({
 	variant: props.variant || "light",
 	styles: {
-		...Styles(props),
+		...getStyles(props.variant || "light"),
 		...props.styles,
 	},
 });
 
 class Console extends React.PureComponent<ConsoleProps, any> {
-	state = {
-		theme: getTheme(this.props),
-		prevStyles: this.props.styles,
-		prevVariant: this.props.variant,
-	};
-
-	static getDerivedStateFromProps(props, state) {
-		if (
-			props.variant !== state.prevVariant ||
-			JSON.stringify(props.styles) !== JSON.stringify(props.prevStyles)
-		) {
-			return {
-				theme: getTheme(props),
-				prevStyles: props.styles,
-				prevVariant: props.variant,
-			};
-		}
-		return null;
-	}
-
 	render() {
 		let {
 			filter = [],
@@ -78,7 +57,6 @@ class Console extends React.PureComponent<ConsoleProps, any> {
 		}
 
 		if (logGrouping) {
-			// @ts-ignore
 			logs = logs.reduce((acc, log) => {
 				const prevLog = acc[acc.length - 1];
 
@@ -100,8 +78,8 @@ class Console extends React.PureComponent<ConsoleProps, any> {
 		}
 
 		return (
-			<ThemeProvider theme={this.state.theme}>
-				<Root>
+			<ThemeProvider theme={getTheme(this.props)}>
+				<div className="break-words w-full">
 					{logs.map((log, i) => {
 						// If the filter is defined and doesn't include the method
 						const filtered =
@@ -110,14 +88,14 @@ class Console extends React.PureComponent<ConsoleProps, any> {
 							filter.indexOf(log.method) === -1;
 
 						return filtered ? null : (
-							<Message
+							<ConsoleMessage
 								log={log}
 								key={log.id || `${log.method}-${i}`}
 								linkifyOptions={this.props.linkifyOptions}
 							/>
 						);
 					})}
-				</Root>
+				</div>
 			</ThemeProvider>
 		);
 	}
