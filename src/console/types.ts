@@ -14,16 +14,6 @@ export interface LogMessage {
 	timestamp?: string;
 }
 
-export type ConsoleProps = {
-	logs: LogMessage[];
-	variant?: Variants;
-	styles?: Theme;
-	searchKeywords?: string;
-	logFilter?: (log: LogMessage) => boolean;
-	logGrouping?: boolean;
-	linkifyOptions?: Options;
-};
-
 export interface Theme {
 	variant: Variants;
 	styles: _Theme;

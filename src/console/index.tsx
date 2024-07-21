@@ -3,18 +3,33 @@ import { getStyles } from "./theme";
 import "../styles.css";
 
 import { deepEqual, shallowEqual } from "fast-equals";
+import { Options } from "linkifyjs/html";
+import { cn } from "../utils";
 import { LogItem } from "./log-item";
-import { ConsoleProps, LogMessage } from "./types";
+import { LogMessage, Theme, Variants } from "./types";
+
+interface Props extends React.HTMLProps<HTMLDivElement> {
+	logs: LogMessage[];
+	variant?: Variants;
+	className?: string;
+	styles?: Theme;
+	searchKeywords?: string;
+	logFilter?: (log: LogMessage) => boolean;
+	logGrouping?: boolean;
+	linkifyOptions?: Options;
+}
 
 export const Console = ({
 	logs,
 	styles,
+	className,
 	variant = "light",
 	logFilter = undefined,
 	linkifyOptions = undefined,
 	searchKeywords = undefined,
 	logGrouping = true,
-}: ConsoleProps) => {
+	...rest
+}: Props) => {
 	if (searchKeywords) {
 		const regex = new RegExp(searchKeywords);
 
@@ -64,7 +79,7 @@ export const Console = ({
 
 	return (
 		<ThemeProvider theme={theme}>
-			<div className="break-words w-full">
+			<div className={cn("break-words w-full", className)} {...rest}>
 				{logs.map((log, i) => (
 					<LogItem
 						log={log}

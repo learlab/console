@@ -1,5 +1,6 @@
 import {
 	ArrowLeft,
+	ArrowRight,
 	BugIcon,
 	CircleX,
 	InfoIcon,
@@ -10,6 +11,8 @@ import {
 import React from "react";
 
 export const methods = [
+	"source-editor",
+	"source-console",
 	"log",
 	"debug",
 	"info",
@@ -26,17 +29,19 @@ export const methods = [
 	"dir",
 ] as const;
 
-export const methodIcons: Record<
-	string,
-	React.ForwardRefExoticComponent<
-		Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
-	>
-> = {
+export const methodIcons = {
 	info: InfoIcon,
 	warn: TriangleAlert,
 	error: CircleX,
 	debug: BugIcon,
 	return: ArrowLeft,
-};
+	"source-console": ArrowRight,
+	"source-editor": ArrowRight,
+} satisfies Record<
+	string,
+	React.ForwardRefExoticComponent<
+		Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
+	>
+>;
 
 export default methods;

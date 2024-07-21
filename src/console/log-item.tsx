@@ -32,15 +32,32 @@ export class LogItem extends React.Component<Props, any> {
 		return (
 			<ThemeProvider theme={this.theme}>
 				<Container style={this.props.style} method={log.method}>
-					{log.amount && log.amount > 1 ? (
-						<AmountIcon method={log.method} style={this.props.style}>
-							{log.amount}
-						</AmountIcon>
+					{log.method === "source-editor" ? (
+						<>
+							<MethodIcon method={"source-editor"} />
+							<details>
+								<summary>editor code</summary>
+								<pre>{log.data[0]}</pre>
+							</details>
+						</>
+					) : log.method === "source-console" ? (
+						<>
+							<MethodIcon method={"source-console"} />
+							<pre>{log.data[0]}</pre>
+						</>
 					) : (
-						<MethodIcon method={log.method} />
+						<>
+							{log.amount && log.amount > 1 ? (
+								<AmountIcon method={log.method} style={this.props.style}>
+									{log.amount}
+								</AmountIcon>
+							) : (
+								<MethodIcon method={log.method} />
+							)}
+							{log.timestamp && <Timestamp>{log.timestamp}</Timestamp>}
+							{this.getNode()}
+						</>
 					)}
-					{log.timestamp && <Timestamp>{log.timestamp}</Timestamp>}
-					{this.getNode()}
 				</Container>
 			</ThemeProvider>
 		);
