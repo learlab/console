@@ -1,5 +1,5 @@
 {
-	"name": "@learlab/console",
+	"name": "react-console-viewer",
 	"version": "0.0.1",
 	"type": "module",
 	"types": "./dist/index.d.ts",
@@ -13,10 +13,8 @@
 		},
 		"./dist/style.css": "./dist/style.css"
 	},
-	"files": [
-		"dist"
-	],
-	"description": "A React component that displays console logs from the current page, an iframe or transported across a server",
+	"files": ["dist"],
+	"description": "A React component that displays console logs",
 	"scripts": {
 		"build": "vite build"
 	},
@@ -52,11 +50,7 @@
 		"react": "^15.x || ^16.x || ^17.x || ^18.x",
 		"react-dom": "^15.x || ^16.x || ^17.x || ^18.x"
 	},
-	"keywords": [
-		"itell",
-		"object-viewer",
-		"react-inspector"
-	],
+	"keywords": ["itell", "object-viewer", "react-inspector"],
 	"homepage": "https://github.com/learlab/console",
 	"repository": {
 		"type": "git",
