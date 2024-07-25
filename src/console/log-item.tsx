@@ -34,16 +34,16 @@ export class LogItem extends React.Component<Props, any> {
 				<Container style={this.props.style} method={log.method}>
 					{log.method === "source-editor" ? (
 						<>
-							<MethodIcon method={"source-editor"} />
+							{/* <MethodIcon method={"source-editor"} />
 							<details>
 								<summary>editor code</summary>
-								<pre>{log.data[0]}</pre>
-							</details>
+								<pre className="not-prose">{log.data[0]}</pre>
+							</details> */}
 						</>
 					) : log.method === "source-console" ? (
 						<>
 							<MethodIcon method={"source-console"} />
-							<pre>{log.data[0]}</pre>
+							<pre className="not-prose">{log.data[0]}</pre>
 						</>
 					) : (
 						<>
